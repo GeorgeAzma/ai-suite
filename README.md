@@ -1,4 +1,5 @@
-Host lots of useful AI services easily
+Host useful AI services with nice web UI
+![webui](webui.png)
 ### Features
 - chat-interface
 - image-gen (x2 faster using tensorrt)
