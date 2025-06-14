@@ -1,0 +1,83 @@
+x-gpu-deploy: &gpu-deploy
+  deploy:
+    resources:
+      reservations:
+        devices:
+          - driver: nvidia
+            count: all
+            capabilities: [ gpu ]
+
+services:
+  ai-base:
+    build: ./base
+    image: ai-suite-base:latest
+    pull_policy: never
+
+  cloudflare:
+    build:
+      context: ./cloudflare
+      args:
+        TUNNEL_NAME: ${TUNNEL_NAME}
+        DOMAIN_NAME: ${DOMAIN_NAME}
+    volumes:
+      - ./cloudflare/credentials.json:/cloudflare/credentials.json
+      - ./cloudflare/cert.pem:/cloudflare/cert.pem
+    depends_on:
+      - open-webui
+
+  comfyui:
+    build: ./comfyui
+    <<: *gpu-deploy
+    volumes:
+      - comfyui-models:/comfyui/models
+      - comfyui-output:/comfyui/output
+      - comfyui-custom_nodes:/comfyui/custom_nodes
+    depends_on:
+      - ai-base
+
+  ollama:
+    build: ./ollama
+    <<: *gpu-deploy
+    volumes:
+      - ollama-models:/root/.ollama
+    depends_on:
+      - ai-base
+    environment:
+      - OLLAMA_HOST=0.0.0.0:11434
+
+  open-webui:
+    build: ./open-webui
+    env_file:
+      - open-webui/config.env
+    environment:
+      - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
+    <<: *gpu-deploy
+    volumes:
+      - open-webui:/app/backend/data
+    depends_on:
+      - ai-base
+
+  stt:
+    build: ./stt
+    <<: *gpu-deploy
+    volumes:
+      - stt-models:/root/.cache/huggingface/hub
+    depends_on:
+      - ai-base
+
+  tts:
+    build: ./tts
+    <<: *gpu-deploy
+    volumes:
+      - tts-models:/root/.cache/huggingface/hub
+    depends_on:
+      - ai-base
+
+volumes:
+  comfyui-models:
+  comfyui-output:
+  comfyui-custom_nodes:
+  ollama-models:
+  tts-models:
+  stt-models:
+  open-webui:

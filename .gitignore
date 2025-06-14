@@ -1,0 +1,4 @@
+cloudflare/*.pem
+cloudflare/*.key
+cloudflare/*.json
+.env
