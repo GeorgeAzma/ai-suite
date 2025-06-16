@@ -54,6 +54,7 @@ services:
     <<: *gpu-deploy
     volumes:
       - open-webui:/app/backend/data
+      - open-webui-cache:/root/.cache
     depends_on:
       - ai-base
 
@@ -81,3 +82,4 @@ volumes:
   tts-models:
   stt-models:
   open-webui:
+  open-webui-cache:
