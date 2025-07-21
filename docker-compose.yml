@@ -28,6 +28,8 @@ services:
   comfyui:
     build: ./comfyui
     <<: *gpu-deploy
+    ports:
+      - "127.0.0.1:8188:8188"
     volumes:
       - comfyui-models:/comfyui/models
       - comfyui-output:/comfyui/output
@@ -52,6 +54,8 @@ services:
     environment:
       - WEBUI_SECRET_KEY=${WEBUI_SECRET_KEY}
     <<: *gpu-deploy
+    ports:
+      - "0.0.0.0:8080:8080"
     volumes:
       - open-webui:/app/backend/data
       - open-webui-cache:/root/.cache
@@ -61,6 +65,8 @@ services:
   stt:
     build: ./stt
     <<: *gpu-deploy
+    ports:
+      - "0.0.0.0:5001:5001"
     volumes:
       - stt-models:/root/.cache/huggingface/hub
     depends_on:
@@ -69,6 +75,8 @@ services:
   tts:
     build: ./tts
     <<: *gpu-deploy
+    ports:
+      - "0.0.0.0:5000:5000"
     volumes:
       - tts-models:/root/.cache/huggingface/hub
     depends_on:
