@@ -34,6 +34,7 @@ services:
       - comfyui-models:/comfyui/models
       - comfyui-output:/comfyui/output
       - comfyui-custom_nodes:/comfyui/custom_nodes
+      - comfyui-workflows:/comfyui/user/default/workflows
     depends_on:
       - ai-base
 
@@ -86,6 +87,7 @@ volumes:
   comfyui-models:
   comfyui-output:
   comfyui-custom_nodes:
+  comfyui-workflows:
   ollama-models:
   tts-models:
   stt-models:
